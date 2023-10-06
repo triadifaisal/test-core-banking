@@ -1,0 +1,52 @@
+version: "3.7"
+
+services:
+  console:
+    image: test/corebanking-base:0.0.1-corebanking
+    working_dir: /go/src/corebanking
+    env_file:
+      - cicd/config/local/.env
+    volumes:
+      - go_cache:/go/pkg/mod/cache
+      - .:/go/src/corebanking/
+    command: sh
+    deploy:
+      resources:
+        limits:
+          memory: 1028M
+        reservations:
+          memory: 128M
+    networks:
+      - corebanking_netcorebanking
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  auth:
+    image: test/corebanking-base:0.0.1-corebanking
+    working_dir: /go/src/corebanking
+    ports:
+      - "127.0.0.1:8090:8090"
+    env_file:
+      - cicd/config/local/.env
+    volumes:
+      - go_cache:/go/pkg/mod/cache
+      - ./cmd/service/auth:/go/src/corebanking/cmd/service/auth
+      - ./pkg:/go/src/corebanking/pkg
+      - ./internal/auth:/go/src/corebanking/internal/auth
+      - ./go.mod:/go/src/corebanking/go.mod
+      - ./go.sum:/go/src/corebanking/go.sum
+      - ./.env:/go/src/core-services/.env
+      - ./config.ini:/go/src/corebanking/config.ini
+    command: watcher -run corebanking/cmd/service/auth -watch corebanking
+    networks:
+      - corebanking_netcorebanking
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  corebanking_netcorebanking:
+    driver: bridge
+
+volumes:
+  go_cache:
+    driver: local
