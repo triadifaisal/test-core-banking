@@ -11,8 +11,9 @@ type User struct {
 	Name          string `gorm:"not null"`
 	NIK           string `gorm:"not null;column:nik"`
 	Phonenumber   sql.NullString
-	AccountNumber string  `gorm:"not null"`
-	Balance       float64 `gorm:"not null;column:latest_balance;default:0"`
+	AccountNumber string     `gorm:"not null"`
+	Balance       float64    `gorm:"not null;column:latest_balance;default:0"`
+	Mutations     []Mutation `gorm:"foreignKey:UserUUID"`
 }
 
 func (User) TableName() string {

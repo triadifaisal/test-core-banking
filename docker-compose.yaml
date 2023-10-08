@@ -1,6 +1,19 @@
 version: '3.9'
 
 services:
+  console:
+    image: test/corebanking-base:0.0.1-corebanking
+    working_dir: /go/src/core-banking
+    env_file:
+      - .env
+    volumes:
+      - ./:/go/src/core-banking
+    command: ["/bin/sh", "-c", "while true; do echo hello; sleep 3; done"]
+    networks:
+      - corebanking-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   db:
     image: postgres:14-alpine
     ports:
@@ -36,10 +49,29 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  transaction:
+    image: test/corebanking-base:0.0.1-corebanking
+    working_dir: /go/src/core-banking
+    ports:
+      - "127.0.0.1:8091:8091"
+    env_file:
+      - .env
+    volumes:
+      - ./cmd/service/transaction:/go/src/core-banking/cmd/service/transaction
+      - ./pkg:/go/src/core-banking/pkg
+      - ./internal/transaction:/go/src/core-banking/internal/transaction
+      - ./go.mod:/go/src/core-banking/go.mod
+      - ./go.sum:/go/src/core-banking/go.sum
+      - ./.env:/go/src/core-services/.env
+      # - ./config.ini:/go/src/core-banking/config.ini
+      - ./config:/go/src/core-banking/config
+    command: watcher -run core-banking/cmd/service/transaction -watch core-banking
+    networks:
+      - corebanking-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
 networks:
   corebanking-network:
     driver: bridge
-
-secrets:
-  db_password:
-    file: db_password.txt
+    

@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"core-banking/pkg/dto/request"
+	"core-banking/pkg/modules/kafka"
+	"core-banking/pkg/modules/kafka/helper"
 )
 
 func (svc *UserService) Withdraw(ctx context.Context, req request.WithdrawRequest) (float64, error) {
@@ -18,6 +20,10 @@ func (svc *UserService) Withdraw(ctx context.Context, req request.WithdrawReques
 	if err := svc.repo.UpdateBalance(ctx, req.AccountNumber, data.Balance); err != nil {
 		return float64(0), err
 	}
+
+	// Publish message to kafka
+	producer := kafka.NewProducer()
+	producer.PublishMessage(string(kafka.MutationIDs), helper.BuildKafkaMessage(data.UUID, "D", req.Nominal))
 
 	return data.Balance, nil
 }

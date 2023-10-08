@@ -27,3 +27,7 @@ make migrate
 ```
 make rollback
 ```
+- start consumer service
+```
+make start-dev-consumer
+```
