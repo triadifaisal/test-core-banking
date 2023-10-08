@@ -13,7 +13,6 @@ ENV GO111MODULE=on\
     CGO_ENABLED=1 \
     CGO_CFLAGS_ALLOW=-Xpreprocessor \
     GOPROXY=https://proxy.golang.org \
-    GOPRIVATE=github.com/urbanindo/* \
     GOOS=linux \
     GOARCH=amd64
 
@@ -21,9 +20,9 @@ ENV GO111MODULE=on\
 RUN apk --no-cache add gcc g++ make ca-certificates curl git openssh
 RUN go install github.com/canthefason/go-watcher/cmd/watcher@latest && \
     go install github.com/rubenv/sql-migrate/...@latest && \
-    mkdir -p /go/src/corebanking
+    mkdir -p /go/src/core-banking
 
-RUN go env -w GOPRIVATE=github.com/urbanindo/*
+# RUN go env -w GOPRIVATE=github.com/urbanindo/*
 
 # ARG NETRC
 # RUN echo ${NETRC} > ~/.netrc && chmod 600 ~/.netrc

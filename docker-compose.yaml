@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:14-alpine
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: user_banking
+      POSTGRES_PASSWORD: secret_banking
+      POSTGRES_DB: banking_test
+    networks:
+      corebanking-network:
+        aliases:
+          - postgres
+
+  users:
+    image: test/corebanking-base:0.0.1-corebanking
+    working_dir: /go/src/core-banking
+    ports:
+      - "127.0.0.1:8090:8090"
+    env_file:
+      - .env
+    volumes:
+      - ./cmd/service/user:/go/src/core-banking/cmd/service/user
+      - ./pkg:/go/src/core-banking/pkg
+      - ./internal/user:/go/src/core-banking/internal/user
+      - ./go.mod:/go/src/core-banking/go.mod
+      - ./go.sum:/go/src/core-banking/go.sum
+      - ./.env:/go/src/core-services/.env
+      # - ./config.ini:/go/src/core-banking/config.ini
+      - ./config:/go/src/core-banking/config
+    command: watcher -run core-banking/cmd/service/user -watch core-banking
+    networks:
+      - corebanking-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  corebanking-network:
+    driver: bridge
+
+secrets:
+  db_password:
+    file: db_password.txt

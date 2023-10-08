@@ -1,0 +1,3 @@
+CREATE SCHEMA IF NOT EXISTS users
+    AUTHORIZATION user_banking;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp"  version "1.1";
