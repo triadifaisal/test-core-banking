@@ -12,9 +12,13 @@ migrate:
 	# https://github.com/golang-migrate/migrate
 	migrate -path database/migrations -database $(DATABASE_SOURCE_NAME) up
 
+migrate-force:
+	# https://github.com/golang-migrate/migrate
+	migrate -path database/migrations -database $(DATABASE_SOURCE_NAME) force $(version)
+
 migrate-create:
 	# https://github.com/golang-migrate/migrate
-	migrate create -ext sql -dir database/migrations -seq $(DATABASE_SOURCE_NAME)
+	migrate create -ext sql -dir database/migrations -seq $(name)
 
 rollback:
 	# https://github.com/golang-migrate/migrate

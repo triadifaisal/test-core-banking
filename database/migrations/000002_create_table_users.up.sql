@@ -1,6 +1,6 @@
 BEGIN;
 CREATE TABLE IF NOT EXISTS users.users(
-    uuid uuid NOT NULL DEFAULT uuid_generate_v4(),
+    uuid uuid NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
     name VARCHAR NOT NULL,
     nik VARCHAR NOT NULL,
     phonenumber VARCHAR(15),

@@ -35,6 +35,7 @@ func main() {
 	e.Add(http.MethodPost, "/daftar", userHandler.Create)
 	e.Add(http.MethodPost, "/tabung", userHandler.Deposit)
 	e.Add(http.MethodPost, "/tarik", userHandler.Withdraw)
+	e.Add(http.MethodGet, "/saldo/:account_number", userHandler.CheckBalance)
 	e.Logger.Fatal(e.Start(":8090"))
 
 }

@@ -87,3 +87,23 @@ func (h *UserHTTPHandler) Withdraw(echoCtx echo.Context) error {
 	_ = echoCtx.JSON(http.StatusOK, response)
 	return nil
 }
+
+func (h *UserHTTPHandler) CheckBalance(echoCtx echo.Context) error {
+	accountNumber := echoCtx.Param("account_number")
+
+	balance, err := h.svc.CheckBalance(echoCtx.Request().Context(), accountNumber)
+	if err != nil {
+		return response.ErrorResponse(echoCtx, err)
+	}
+
+	response := response.Response{
+		Status: true,
+		Data: map[string]interface{}{
+			"saldo": balance,
+		},
+		Remark: "Cek saldo berhasil",
+	}
+
+	_ = echoCtx.JSON(http.StatusOK, response)
+	return nil
+}
