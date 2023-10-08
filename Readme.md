@@ -2,16 +2,28 @@
 
 ## Description
 
-API to store user and transaction bank account
+API to handling all banking activity, such as:
+- registered user
+- deposit
+- withdrawing
+- check balance
+- get account mutation
 
 ## Installation
 ### Migrate database
-- create secret file db_password.txt and define the db password
+- build base docker image
+```
+make build-base-image
+```
 - run docker container
 ```
 docker compose up -d
 ```
 - run db migration
 ```
-make migrate url="postgres://{user_db}:{password_db}@{host_db}:{port_db}/{db_name}?sslmode=disable"
+make migrate
+```
+- rollback db migration
+```
+make rollback
 ```
